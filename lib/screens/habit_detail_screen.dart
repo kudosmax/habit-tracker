@@ -57,7 +57,7 @@ class HabitDetailScreen extends StatelessWidget {
             _buildStatsCards(context),
             const SizedBox(height: AppConstants.spacingLG),
             
-            // GitHub 스타일 그리드
+            // 연간 활동 그리드
             _buildGridSection(context),
             const SizedBox(height: AppConstants.spacingLG),
             

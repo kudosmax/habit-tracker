@@ -2,8 +2,8 @@ class AppConstants {
   // 그리드 관련 상수
   static const int daysInGrid = 365; // 1년
   static const int daysInWeek = 7;
-  static const double gridCellSize = 12.0;
-  static const double gridCellSpacing = 2.0;
+  static const double gridCellSize = 10.0;
+  static const double gridCellSpacing = 1.5;
   static const double gridCellRadius = 2.0;
   
   // 카드 관련 상수

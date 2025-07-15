@@ -91,8 +91,8 @@ class HabitGrid extends StatelessWidget {
     double cellWithSpacing = AppConstants.gridCellSize + AppConstants.gridCellSpacing;
     int maxColumns = (availableWidth / cellWithSpacing).floor();
     
-    // 최소 20개, 최대 53개 컬럼 (GitHub과 유사)
-    return maxColumns.clamp(20, 53);
+    // 모바일 화면에 맞게 조정: 최소 25개, 최대 50개 컬럼
+    return maxColumns.clamp(25, 50);
   }
 }
 

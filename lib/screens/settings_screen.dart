@@ -52,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             const SizedBox(height: AppConstants.spacingMD),
             Text(
-              '간단한 위젯: 습관명 + 잔디 그리드 + 오늘 체크 버튼',
+              '간단한 위젯: 습관명 + 활동 기록 + 오늘 체크 버튼',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -191,7 +191,7 @@ class SettingsScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.track_changes),
               title: const Text('Habit Tracker'),
-              subtitle: const Text('버전 1.0.0\nGitHub 스타일 습관 추적 앱'),
+              subtitle: const Text('버전 1.0.0\n시각적 습관 추적 앱'),
               isThreeLine: true,
             ),
             const Divider(),
@@ -229,7 +229,7 @@ class SettingsScreen extends StatelessWidget {
               Text('위젯 기능:', style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 4),
               Text('• 습관명과 현재 연속기록 표시'),
-              Text('• 최근 15일 GitHub 잔디 그리드'),
+              Text('• 최근 15일 활동 기록 그리드'),
               Text('• 우측 하단 체크 버튼으로 오늘 토글'),
             ],
           ),

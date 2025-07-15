@@ -13,7 +13,7 @@ class AppColors {
     Color(0xFF795548), // 브라운
   ];
   
-  // GitHub 스타일 그리드 색상
+  // 활동 그리드 색상
   static const Color gridBackground = Color(0xFFEBEDF0);
   static const Color gridEmptyDay = Color(0xFFEBEDF0);
   static const Color gridTodayBorder = Color(0xFF1976D2);

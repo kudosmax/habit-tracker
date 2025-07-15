@@ -83,7 +83,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: AppConstants.spacingSM),
           Text(
-            'GitHub 스타일 그리드로\n습관을 시각적으로 추적해보세요',
+            '매일의 성취를 시각적으로\n확인하고 관리해보세요',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.grey[500],

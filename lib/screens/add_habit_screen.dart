@@ -224,7 +224,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      'GitHub 그리드',
+                      '활동 기록',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey[500],
                       ),
