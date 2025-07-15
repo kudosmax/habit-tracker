@@ -40,10 +40,10 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                       strokeWidth: 2,
                     ),
                   )
-                : const Text(
+                : Text(
                     '저장',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.primaryColor,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -94,7 +94,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
               borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
             ),
             filled: true,
-            fillColor: Colors.grey[50],
+            fillColor: AppColors.surfaceColor,
           ),
           textCapitalization: TextCapitalization.sentences,
           maxLength: 20,
@@ -147,7 +147,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                   borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
                   border: isSelected 
                       ? Border.all(color: AppColors.textPrimary, width: 3)
-                      : Border.all(color: Colors.grey[300]!, width: 1),
+                      : Border.all(color: AppColors.borderColor, width: 1),
                 ),
                 child: isSelected
                     ? const Icon(
@@ -219,14 +219,14 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                   width: 100,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: AppColors.surfaceColor,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Center(
                     child: Text(
                       '활동 기록',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.grey[500],
+                        color: AppColors.textSecondary,
                       ),
                     ),
                   ),

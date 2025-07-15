@@ -6,6 +6,7 @@ import '../utils/date_utils.dart';
 import 'add_habit_screen.dart';
 import 'settings_screen.dart';
 import '../constants/constants.dart';
+import '../constants/colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -72,13 +73,13 @@ class HomeScreen extends StatelessWidget {
           Icon(
             Icons.track_changes,
             size: 80,
-            color: Colors.grey[400],
+            color: AppColors.textSecondary,
           ),
           const SizedBox(height: AppConstants.spacingLG),
           Text(
             '첫 번째 습관을 만들어보세요!',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.grey[600],
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: AppConstants.spacingSM),
@@ -86,7 +87,7 @@ class HomeScreen extends StatelessWidget {
             '매일의 성취를 시각적으로\n확인하고 관리해보세요',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey[500],
+              color: AppColors.textSecondary,
             ),
           ),
           const SizedBox(height: AppConstants.spacingXL),

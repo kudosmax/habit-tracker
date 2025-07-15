@@ -27,11 +27,19 @@ class MyApp extends StatelessWidget {
         title: 'Habit Tracker',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: AppColors.primaryColor,
+          colorScheme: ColorScheme.dark(
+            primary: AppColors.primaryColor,
+            secondary: AppColors.primaryColor,
             background: AppColors.backgroundColor,
+            surface: AppColors.cardColor,
+            onPrimary: AppColors.textPrimary,
+            onSecondary: AppColors.textPrimary,
+            onBackground: AppColors.textPrimary,
+            onSurface: AppColors.textPrimary,
+            outline: AppColors.borderColor,
           ),
           useMaterial3: true,
+          scaffoldBackgroundColor: AppColors.backgroundColor,
           cardTheme: CardTheme(
             color: AppColors.cardColor,
             elevation: 2,
@@ -40,13 +48,30 @@ class MyApp extends StatelessWidget {
             ),
           ),
           appBarTheme: const AppBarTheme(
-            backgroundColor: AppColors.primaryColor,
-            foregroundColor: Colors.white,
+            backgroundColor: AppColors.backgroundColor,
+            foregroundColor: AppColors.textPrimary,
             elevation: 0,
+            surfaceTintColor: Colors.transparent,
           ),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: AppColors.primaryColor,
             foregroundColor: Colors.white,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true,
+            fillColor: AppColors.surfaceColor,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderColor),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppColors.primaryColor),
+            ),
           ),
         ),
         home: const HomeScreen(),

@@ -13,17 +13,19 @@ class AppColors {
     Color(0xFF795548), // 브라운
   ];
   
-  // 활동 그리드 색상
-  static const Color gridBackground = Color(0xFFEBEDF0);
-  static const Color gridEmptyDay = Color(0xFFEBEDF0);
-  static const Color gridTodayBorder = Color(0xFF1976D2);
+  // 활동 그리드 색상 (다크모드)
+  static const Color gridBackground = Color(0xFF161B22);
+  static const Color gridEmptyDay = Color(0xFF21262D);
+  static const Color gridTodayBorder = Color(0xFF58A6FF);
   
-  // 앱 테마 색상
-  static const Color primaryColor = Color(0xFF1976D2);
-  static const Color backgroundColor = Color(0xFFF5F5F5);
-  static const Color cardColor = Colors.white;
-  static const Color textPrimary = Color(0xFF212121);
-  static const Color textSecondary = Color(0xFF757575);
+  // 앱 테마 색상 (다크모드)
+  static const Color primaryColor = Color(0xFF58A6FF);
+  static const Color backgroundColor = Color(0xFF0D1117);
+  static const Color cardColor = Color(0xFF161B22);
+  static const Color textPrimary = Color(0xFFF0F6FC);
+  static const Color textSecondary = Color(0xFF8B949E);
+  static const Color borderColor = Color(0xFF30363D);
+  static const Color surfaceColor = Color(0xFF21262D);
   
   // 색상 이름 (선택 UI에서 사용)
   static const List<String> colorNames = [
