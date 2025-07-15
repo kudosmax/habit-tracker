@@ -30,7 +30,6 @@ class HabitCard extends StatelessWidget {
             children: [
               // 왼쪽: 습관 정보 및 체크박스
               Expanded(
-                flex: 2,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -82,11 +81,8 @@ class HabitCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppConstants.spacingMD),
-              // 오른쪽: 축약된 그리드
-              Expanded(
-                flex: 3,
-                child: CompactHabitGrid(habit: habit),
-              ),
+              // 오른쪽: 주요 통계 숫자
+              _buildMainStats(context),
             ],
           ),
         ),
@@ -111,18 +107,43 @@ class HabitCard extends StatelessWidget {
         const SizedBox(width: AppConstants.spacingMD),
         _buildStatItem(
           context,
-          icon: Icons.check_circle_outline,
-          value: '$totalDays',
-          label: '총계',
-          color: AppColors.textSecondary,
-        ),
-        const SizedBox(width: AppConstants.spacingMD),
-        _buildStatItem(
-          context,
           icon: Icons.calendar_month,
           value: '$thisMonthDays',
           label: '이번달',
           color: AppColors.textSecondary,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMainStats(BuildContext context) {
+    int totalDays = habit.totalCompletedDays;
+    double completionRate = 0.0;
+    
+    int daysSinceCreation = DateTime.now().difference(habit.createdAt).inDays + 1;
+    if (daysSinceCreation > 0) {
+      completionRate = (totalDays / daysSinceCreation) * 100;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        // 총 완료 일수
+        Text(
+          '$totalDays일',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: habit.color,
+          ),
+        ),
+        const SizedBox(height: 2),
+        // 완료율
+        Text(
+          '${completionRate.toStringAsFixed(0)}%',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );
