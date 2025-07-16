@@ -2,9 +2,42 @@ class AppConstants {
   // 그리드 관련 상수
   static const int daysInGrid = 365; // 1년
   static const int daysInWeek = 7;
-  static const double gridCellSize = 10.0;
-  static const double gridCellSpacing = 1.5;
+  
+  // 반응형 그리드 크기
+  static const double gridCellSizeMobile = 10.0;
+  static const double gridCellSizeTablet = 14.0;
+  static const double gridCellSizeDesktop = 18.0;
+  
+  static const double gridCellSpacingMobile = 1.5;
+  static const double gridCellSpacingTablet = 2.0;
+  static const double gridCellSpacingDesktop = 3.0;
+  
   static const double gridCellRadius = 2.0;
+  
+  // 화면 크기 브레이크포인트
+  static const double mobileBreakpoint = 600;
+  static const double tabletBreakpoint = 1024;
+  
+  // 반응형 헬퍼 메서드
+  static double getGridCellSize(double screenWidth) {
+    if (screenWidth < mobileBreakpoint) {
+      return gridCellSizeMobile;
+    } else if (screenWidth < tabletBreakpoint) {
+      return gridCellSizeTablet;
+    } else {
+      return gridCellSizeDesktop;
+    }
+  }
+  
+  static double getGridCellSpacing(double screenWidth) {
+    if (screenWidth < mobileBreakpoint) {
+      return gridCellSpacingMobile;
+    } else if (screenWidth < tabletBreakpoint) {
+      return gridCellSpacingTablet;
+    } else {
+      return gridCellSpacingDesktop;
+    }
+  }
   
   // 카드 관련 상수
   static const double cardBorderRadius = 12.0;

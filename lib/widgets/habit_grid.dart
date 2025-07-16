@@ -26,18 +26,22 @@ class HabitGrid extends StatelessWidget {
     
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 그리드 크기 계산
+        // 반응형 그리드 크기 계산
         double availableWidth = constraints.maxWidth;
-        int columnsCount = _calculateColumns(availableWidth);
+        double screenWidth = MediaQuery.of(context).size.width;
+        double cellSize = AppConstants.getGridCellSize(screenWidth);
+        double cellSpacing = AppConstants.getGridCellSpacing(screenWidth);
+        
+        int columnsCount = _calculateColumns(availableWidth, cellSize, cellSpacing);
         int rowsCount = (days / columnsCount).ceil();
         
         return SizedBox(
-          height: rowsCount * (AppConstants.gridCellSize + AppConstants.gridCellSpacing),
+          height: rowsCount * (cellSize + cellSpacing),
           child: Wrap(
-            spacing: AppConstants.gridCellSpacing,
-            runSpacing: AppConstants.gridCellSpacing,
+            spacing: cellSpacing,
+            runSpacing: cellSpacing,
             children: gridDates.map((date) {
-              return _buildGridCell(date, context);
+              return _buildGridCell(date, context, cellSize);
             }).toList(),
           ),
         );
@@ -45,7 +49,7 @@ class HabitGrid extends StatelessWidget {
     );
   }
 
-  Widget _buildGridCell(DateTime date, BuildContext context) {
+  Widget _buildGridCell(DateTime date, BuildContext context, double cellSize) {
     bool isCompleted = habit.isCompletedOn(date);
     bool isToday = showToday && DateHelper.isToday(date);
     bool isFuture = date.isAfter(DateTime.now());
@@ -67,8 +71,8 @@ class HabitGrid extends StatelessWidget {
     }
 
     Widget cell = Container(
-      width: AppConstants.gridCellSize,
-      height: AppConstants.gridCellSize,
+      width: cellSize,
+      height: cellSize,
       decoration: BoxDecoration(
         color: cellColor,
         border: isToday ? Border.all(color: borderColor, width: 1.5) : null,
@@ -86,13 +90,22 @@ class HabitGrid extends StatelessWidget {
     return cell;
   }
 
-  int _calculateColumns(double availableWidth) {
+  int _calculateColumns(double availableWidth, double cellSize, double cellSpacing) {
     // 사용 가능한 너비에 따라 컬럼 수 계산
-    double cellWithSpacing = AppConstants.gridCellSize + AppConstants.gridCellSpacing;
+    double cellWithSpacing = cellSize + cellSpacing;
     int maxColumns = (availableWidth / cellWithSpacing).floor();
     
-    // 모바일 화면에 맞게 조정: 최소 25개, 최대 50개 컬럼
-    return maxColumns.clamp(25, 50);
+    // 화면 크기에 따라 적절한 컬럼 수 조정
+    if (cellSize >= AppConstants.gridCellSizeDesktop) {
+      // 데스크톱: 최소 30개, 최대 53개
+      return maxColumns.clamp(30, 53);
+    } else if (cellSize >= AppConstants.gridCellSizeTablet) {
+      // 태블릿: 최소 28개, 최대 50개
+      return maxColumns.clamp(28, 50);
+    } else {
+      // 모바일: 최소 25개, 최대 45개
+      return maxColumns.clamp(25, 45);
+    }
   }
 }
 

@@ -118,12 +118,7 @@ class HabitCard extends StatelessWidget {
 
   Widget _buildMainStats(BuildContext context) {
     int totalDays = habit.totalCompletedDays;
-    double completionRate = 0.0;
-    
     int daysSinceCreation = DateTime.now().difference(habit.createdAt).inDays + 1;
-    if (daysSinceCreation > 0) {
-      completionRate = (totalDays / daysSinceCreation) * 100;
-    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -137,9 +132,9 @@ class HabitCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 2),
-        // 완료율
+        // 진행 기간
         Text(
-          '${completionRate.toStringAsFixed(0)}%',
+          '${daysSinceCreation}일째',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: AppColors.textSecondary,
             fontWeight: FontWeight.w500,
