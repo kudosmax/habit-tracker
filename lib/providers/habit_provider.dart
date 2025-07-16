@@ -43,6 +43,17 @@ class HabitProvider extends ChangeNotifier {
     _updateWidget();
   }
 
+  // 습관 수정
+  Future<void> updateHabit(Habit habit) async {
+    await _habitBox.put(habit.id, habit);
+    int index = _habits.indexWhere((h) => h.id == habit.id);
+    if (index != -1) {
+      _habits[index] = habit;
+    }
+    notifyListeners();
+    _updateWidget();
+  }
+
   // 습관 삭제
   Future<void> deleteHabit(String habitId) async {
     await _habitBox.delete(habitId);
@@ -51,16 +62,6 @@ class HabitProvider extends ChangeNotifier {
     _updateWidget();
   }
 
-  // 습관 업데이트
-  Future<void> updateHabit(Habit habit) async {
-    await _habitBox.put(habit.id, habit);
-    int index = _habits.indexWhere((h) => h.id == habit.id);
-    if (index != -1) {
-      _habits[index] = habit;
-      notifyListeners();
-      _updateWidget();
-    }
-  }
 
   // 습관 찾기
   Habit? getHabit(String habitId) {

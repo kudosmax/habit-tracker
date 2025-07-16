@@ -6,6 +6,7 @@ import '../widgets/habit_grid.dart';
 import '../utils/date_utils.dart';
 import '../constants/constants.dart';
 import '../constants/colors.dart';
+import 'edit_habit_screen.dart';
 
 class HabitDetailScreen extends StatelessWidget {
   final Habit habit;
@@ -311,11 +312,19 @@ class HabitDetailScreen extends StatelessWidget {
     }
   }
 
-  void _showEditDialog(BuildContext context) {
-    // TODO: 편집 기능은 나중에 구현
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('편집 기능은 곧 추가될 예정입니다')),
+  void _showEditDialog(BuildContext context) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditHabitScreen(habit: habit),
+      ),
     );
+    
+    // 편집이 성공했다면 상세 화면도 새로고침
+    if (result == true && context.mounted) {
+      // 상태가 변경되었으므로 화면을 다시 빌드하도록 함
+      // Provider의 notifyListeners가 호출되어 자동으로 갱신됨
+    }
   }
 
   void _showDeleteDialog(BuildContext context) {
