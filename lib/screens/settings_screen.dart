@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/habit_provider.dart';
 import '../constants/constants.dart';
 import '../constants/colors.dart';
+import '../services/backup_service.dart';
+import '../models/habit.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -135,7 +137,7 @@ class SettingsScreen extends StatelessWidget {
                       title: const Text('데이터 백업'),
                       subtitle: Text('${provider.totalHabitsCount}개 습관 백업'),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () => _showComingSoon(context, '데이터 백업'),
+                      onTap: () => _performBackup(context, provider),
                     ),
                     const Divider(),
                     ListTile(
@@ -143,7 +145,15 @@ class SettingsScreen extends StatelessWidget {
                       title: const Text('데이터 복원'),
                       subtitle: const Text('백업 파일에서 복원'),
                       trailing: const Icon(Icons.chevron_right),
-                      onTap: () => _showComingSoon(context, '데이터 복원'),
+                      onTap: () => _performRestore(context, provider),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.upload_file),
+                      title: const Text('습관 데이터 가져오기'),
+                      subtitle: const Text('CSV/JSON 파일에서 습관 추가'),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: () => _importHabitData(context, provider),
                     ),
                     const Divider(),
                     ListTile(
@@ -250,13 +260,191 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
+  // 데이터 백업 실행
+  void _performBackup(BuildContext context, HabitProvider provider) {
+    if (provider.habits.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('백업할 습관 데이터가 없습니다')),
+      );
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('데이터 백업'),
+        content: Text(
+          '${provider.totalHabitsCount}개의 습관과 모든 기록을 백업하시겠습니까?\n\n'
+          '백업 파일은 JSON 형식으로 다운로드됩니다.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              BackupService.performBackup(provider.habits);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('백업 파일이 다운로드되었습니다'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            child: const Text('백업'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 데이터 복원 실행
+  void _performRestore(BuildContext context, HabitProvider provider) async {
+    final hasExistingData = provider.habits.isNotEmpty;
+    
+    if (hasExistingData) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('데이터 복원'),
+          content: const Text(
+            '기존 데이터가 있습니다.\n'
+            '복원하면 기존 데이터와 백업 데이터가 병합됩니다.\n\n'
+            '계속하시겠습니까?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('계속'),
+            ),
+          ],
+        ),
+      );
+      
+      if (confirmed != true) return;
+    }
+
+    try {
+      final result = await BackupService.importBackupFile();
+      
+      if (result.success) {
+        // 백업 데이터 가져오기 성공
+        for (Habit habit in result.habits) {
+          await provider.addHabit(habit);
+        }
+        
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('복원 중 오류가 발생했습니다: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  // 습관 데이터 가져오기 (CSV/JSON)
+  void _importHabitData(BuildContext context, HabitProvider provider) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('습관 데이터 가져오기'),
+        content: const Text(
+          '다음 형식의 파일을 가져올 수 있습니다:\n\n'
+          '• JSON: 전체 백업 파일\n'
+          '• CSV: 습관명,날짜1,날짜2,날짜3...\n\n'
+          '예시: 운동하기,2024-01-01,2024-01-03,2024-01-05\n\n'
+          '파일을 선택하시겠습니까?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              
+              try {
+                final result = await BackupService.importBackupFile();
+                
+                if (result.success) {
+                  // 데이터 가져오기 성공
+                  for (Habit habit in result.habits) {
+                    await provider.addHabit(habit);
+                  }
+                  
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result.message),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } else {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result.message),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('가져오기 중 오류가 발생했습니다: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('파일 선택'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _showDeleteAllDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('모든 데이터 삭제'),
         content: const Text(
-          '정말로 모든 습관과 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.',
+          '정말로 모든 습관과 기록을 삭제하시겠습니까?\n'
+          '이 작업은 되돌릴 수 없습니다.\n\n'
+          '삭제하기 전에 백업을 권장합니다.',
         ),
         actions: [
           TextButton(
@@ -264,14 +452,57 @@ class SettingsScreen extends StatelessWidget {
             child: const Text('취소'),
           ),
           TextButton(
-            onPressed: () {
-              // TODO: 모든 데이터 삭제 구현
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('데이터 삭제 기능은 곧 추가될 예정입니다'),
+              
+              // 최종 확인
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('⚠️ 최종 확인'),
+                  content: const Text(
+                    '정말로 모든 데이터를 삭제하시겠습니까?\n'
+                    '이 작업은 되돌릴 수 없습니다!',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('취소'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      child: const Text('삭제'),
+                    ),
+                  ],
                 ),
               );
+              
+              if (confirmed == true) {
+                try {
+                  await BackupService.deleteAllData(
+                    Provider.of<HabitProvider>(context, listen: false)
+                  );
+                  
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('모든 데이터가 삭제되었습니다'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('삭제 중 오류가 발생했습니다: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              }
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
             child: const Text('삭제'),
